@@ -15,7 +15,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+
 import java.util.Iterator;
+
+
 
 public class MyGdxGame extends ApplicationAdapter {
 	private Texture dropImage;
@@ -27,6 +30,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
+
 
 	@Override
 	public void create() {
@@ -57,7 +61,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		// create the raindrops array and spawn the first raindrop
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
+
 	}
+
 
 	private void spawnRaindrop() {
 		Rectangle raindrop = new Rectangle();
@@ -100,16 +106,21 @@ public class MyGdxGame extends ApplicationAdapter {
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
 			bucket.x = touchPos.x - 64 / 2;
+			bucket.y = touchPos.y - 64 / 2;
 		}
 		if(Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= 200 * Gdx.graphics.getDeltaTime();
 		if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucket.x += 200 * Gdx.graphics.getDeltaTime();
-
+		if(Gdx.input.isKeyPressed(Keys.F1)) bucket.y -= 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.F2)) bucket.y += 200 * Gdx.graphics.getDeltaTime();
 		// make sure the bucket stays within the screen bounds
 		if(bucket.x < 0) bucket.x = 0;
 		if(bucket.x > 800 - 64) bucket.x = 800 - 64;
-
+		if(bucket.y < 0) bucket.y = 0;
+		if(bucket.y > 480 - 64) bucket.y = 480 - 64;
 		// check if we need to create a new raindrop
 		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
+		batch.begin();
+
 
 		// move the raindrops, remove any that are beneath the bottom edge of
 		// the screen or that hit the bucket. In the later case we play back
@@ -122,6 +133,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			if(raindrop.overlaps(bucket)) {
 				dropSound.play();
 				iter.remove();
+
 			}
 		}
 	}
@@ -134,5 +146,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		dropSound.dispose();
 		rainMusic.dispose();
 		batch.dispose();
+
 	}
 }
